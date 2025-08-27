@@ -35,3 +35,15 @@ def test_post_progress(client):
     assert data['result'] == 'ok'
     assert data['progress']['completed'] == 7
     assert data['progress']['focus_time'] == 123
+
+
+def test_post_progress_invalid(client):
+    # 空データ
+    res = client.post('/api/progress', json={})
+    assert res.status_code == 400  # 空データは400エラー
+    data = res.get_json()
+    assert 'error' in data
+
+    # 不正なJSON（None）
+    res2 = client.post('/api/progress', data=None)
+    assert res2.status_code == 415  # Content-Type不正は415エラー
